@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 const Shifter = (props) => {
     const breakPoints = [
         { width: 1, itemsToShow: 1 },
-        { width: 420, itemsToShow: 2,},
+        { width: 600, itemsToShow: 2,},
         { width: 1024, itemsToShow: 3 },
     ];
     const ref = useRef(null);
@@ -22,7 +22,7 @@ const Shifter = (props) => {
                 breakPoints={breakPoints}
                 itemsToScroll={1}
                 focusOnSelect={true}
-                itemPadding={[0, 10]}
+                // itemPadding={[0, 10]}
                 showArrows={false}
             >
                 {props.children}

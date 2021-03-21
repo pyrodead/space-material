@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 import './App.scss';
 import jsonLaunches from './json/dummyLaunches.json';
 import jsonEvents from './json/dummyEvents.json';
@@ -11,24 +12,17 @@ import {
     getUpcomingLaunches,
     getUpcomingEvents,
 } from './utils/utils'
-import { connect } from 'react-redux';
 import {
     HashRouter,
     Route,
     Switch,
     Redirect,
 } from 'react-router-dom';
-import HomePage from './components/HomePage';
-import LaunchPage from './components/LaunchPage';
-import PropTypes from "prop-types";
+import routes from './components/routes';
 
-export const AppContent = (props) => {
-    const {
-        setUpcomingLaunchesConnect,
-        setInitializedConnect,
-        setUpcomingEventsConnect,
-        initialized,
-    } = props;
+export const AppContent = () => {
+    const initialized = useSelector(state => state.initialized);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // Added dummy json, API is down 90% of the time
@@ -36,34 +30,30 @@ export const AppContent = (props) => {
             const launches = () => getUpcomingLaunches()
                 .then((response) => {
                     if (response.status === 200) {
-                        setUpcomingLaunchesConnect(response.data);
+                        dispatch(setUpcomingLaunches(response.data));
                     }
                 })
                 .catch(() => {
-                    setUpcomingLaunchesConnect(jsonLaunches);
+                    dispatch(setUpcomingLaunches(jsonLaunches));
                 });
 
             const events = () => getUpcomingEvents()
                 .then((response) => {
                     if (response.status === 200) {
-                        setUpcomingEventsConnect(response.data);
+                        dispatch(setUpcomingEvents(response.data));
                     }
                 })
                 .catch(() => {
-                    setUpcomingEventsConnect(jsonEvents);
+                    dispatch(setUpcomingEvents(jsonEvents));
                 });
 
             return Promise.all([launches(), events()]);
         }
 
         fetchData().then(() => {
-            setInitializedConnect(true);
+            dispatch(setInitialized(true));
         });
-    }, [
-        setUpcomingLaunchesConnect,
-        setInitializedConnect,
-        setUpcomingEventsConnect,
-    ])
+    }, [dispatch])
 
     if (!initialized) {
         return null;
@@ -72,28 +62,13 @@ export const AppContent = (props) => {
     return (
         <HashRouter>
             <Switch>
-                <Route path="/" exact strict component={HomePage}/>
-                <Route path="/launch/:launchId" exact component={LaunchPage} />
+                {routes.map((route) =>
+                    <Route key={route.path} path={route.path} exact strict={route.strict} component={route.component}/>
+                )}
                 <Redirect to="/" />
             </Switch>
         </HashRouter>
     );
 }
 
-AppContent.propTypes = {
-    setUpcomingLaunchesConnect: PropTypes.func.isRequired,
-    setInitializedConnect: PropTypes.func.isRequired,
-    setUpcomingEventsConnect: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-    initialized: state.initialized,
-});
-
-const mapDispatchToProps = {
-    setUpcomingLaunchesConnect: setUpcomingLaunches,
-    setUpcomingEventsConnect: setUpcomingEvents,
-    setInitializedConnect: setInitialized,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AppContent);
+export default AppContent;

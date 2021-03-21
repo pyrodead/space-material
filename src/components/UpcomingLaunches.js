@@ -7,7 +7,10 @@ import {
     incrementUpcomingLaunches,
 } from "../actions";
 import placeholder2 from "../images/placeholder2.png";
+import {Card, CardContent, CardMedia, Chip, Grid, Typography} from '@material-ui/core';
+import classNames from 'classnames';
 import PropTypes from "prop-types";
+import { useStyles } from "./Styles";
 
 export const UpcomingLaunchesContent = (props) => {
     const {
@@ -16,6 +19,7 @@ export const UpcomingLaunchesContent = (props) => {
         incrementLaunchesOffsetConnect,
         pager,
     } = props;
+    const classes = useStyles();
 
     const showLoadMoreBtn = upcomingLaunches.results.length < upcomingLaunches.count;
 
@@ -39,36 +43,51 @@ export const UpcomingLaunchesContent = (props) => {
             <div className="sl-title -center">
                 Spaceflight Launches
             </div>
-            <div className="sl-upcoming-events">
+            <Grid container spacing={3}>
                 {
                     upcomingLaunches.results.map((item) => (
-                        <div key={item.id} className="event">
-                            {
-                                item.image_url
-                                    ? (
-                                        <div className="sl-image-container">
-                                            <NavLink to={`/launch/${item.id}`}>
-                                                <img src={item.image_url} className="image" alt={item.name} />
-                                            </NavLink>
-                                        </div>
-                                    )
-                                    : (
-                                        <div className="sl-image-container">
-                                            <NavLink to={`/launch/${item.id}`}>
-                                                <img src={placeholder2} className="image" alt="placeholder"/>
-                                            </NavLink>
-                                        </div>)
-                            }
-                            <div className="sl-events-title -center-offset">
-                                <NavLink to={`/launch/${item.id}`} className="sl-link">
-                                    <div className="sl-chip -center-offset -gradient">{createDateAsUTC(item.net)}</div>
-                                    {item.name}
+                        <Grid item key={item.id} className="event" xs={12} sm={6}>
+                            <Card elevation={0}>
+                                <NavLink className={classes.link} to={`/launch/${item.id}`}>
+                                    <CardMedia
+                                        className={classes.cardMedia}
+                                        image={item.image_url ? item.image_url : placeholder2}
+                                    />
+                                    <CardContent>
+                                        <Chip className={classNames(classes.chip, classes.offsetChip, classes.gradient)} label={createDateAsUTC(item.net)} />
+                                        <Typography className={classes.launchTitle}>
+                                            {item.name}
+                                        </Typography>
+                                        {/*<div className="sl-events-title -indent-top">{item.name}</div>*/}
+                                    </CardContent>
                                 </NavLink>
-                            </div>
-                        </div>
+                            </Card>
+                            {/*{*/}
+                            {/*    item.image_url*/}
+                            {/*        ? (*/}
+                            {/*            <div className="sl-image-container">*/}
+                            {/*                <NavLink to={`/launch/${item.id}`}>*/}
+                            {/*                    <img src={item.image_url} className="image" alt={item.name} />*/}
+                            {/*                </NavLink>*/}
+                            {/*            </div>*/}
+                            {/*        )*/}
+                            {/*        : (*/}
+                            {/*            <div className="sl-image-container">*/}
+                            {/*                <NavLink to={`/launch/${item.id}`}>*/}
+                            {/*                    <img src={placeholder2} className="image" alt="placeholder"/>*/}
+                            {/*                </NavLink>*/}
+                            {/*            </div>)*/}
+                            {/*}*/}
+                            {/*<div className="sl-events-title -center-offset">*/}
+                            {/*    <NavLink to={`/launch/${item.id}`} className="sl-link">*/}
+                            {/*        <div className="sl-chip -center-offset -gradient">{createDateAsUTC(item.net)}</div>*/}
+                            {/*        {item.name}*/}
+                            {/*    </NavLink>*/}
+                            {/*</div>*/}
+                        </Grid>
                     ))
                 }
-            </div>
+            </Grid>
             <div className="btn-container">
                 <button className="sl-btn -small" onClick={handleLoadMore}>Load More</button>
             </div>

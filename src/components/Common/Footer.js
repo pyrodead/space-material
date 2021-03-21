@@ -1,10 +1,12 @@
+import { Container } from "@material-ui/core";
+
 const Footer = () => (
-    <footer className="sl-content-wrapper">
+    <Container maxWidth="lg">
         <div className="sl-footer">
             <div className="logo-container"><div className="logo" /></div>
             <div className="copyright">© 2021 Copyright</div>
         </div>
-    </footer>
+    </Container>
 )
 
 export default Footer;

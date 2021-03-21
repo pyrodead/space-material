@@ -2,10 +2,19 @@ import { connect } from "react-redux";
 import { createDateAsUTC } from "../utils/utils";
 import placeholder from "../images/placeholder1.png";
 import Shifter from './Shifter';
+import {
+    Card,
+    CardMedia,
+    CardContent,
+    Chip,
+    Typography,
+} from '@material-ui/core';
+import { useStyles } from "./Styles";
 import PropTypes from "prop-types";
 
 export const UpcomingEventsContent = (props) => {
     const { upcomingEvents } = props;
+    const classes = useStyles();
 
     return (
         <div className="sl-shifter-container">
@@ -13,11 +22,16 @@ export const UpcomingEventsContent = (props) => {
             <Shifter>
                 {
                     upcomingEvents.results.map((item) => (
-                        <div key={item.id} className="sl-shifter-item">
-                            {item.feature_image  ? <div className="sl-image-container"><img src={item.feature_image} className="image" alt={item.name} draggable="false" /></div> : <div className="sl-image-container"><img src={placeholder} className="image" alt="placeholder" draggable="false"/>}</div>}
-                            <div className="sl-chip">{createDateAsUTC(item.date)}</div>
-                            <div className="sl-events-title">{item.name}</div>
-                        </div>
+                        <Card key={item.id} className={classes.card}>
+                            <CardMedia
+                                className={classes.cardMedia}
+                                image={item.feature_image}
+                            />
+                            <CardContent>
+                                <Chip className={classes.chip} label={createDateAsUTC(item.date)} />
+                                <div className="sl-events-title -indent-top">{item.name}</div>
+                            </CardContent>
+                        </Card>
                     ))
                 }
             </Shifter>
